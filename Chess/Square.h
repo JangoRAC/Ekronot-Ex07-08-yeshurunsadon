@@ -4,7 +4,7 @@
 class Square
 {
 public:
-		
+	Square();
 	Square(const Position& pos);
 	~Square();
 	Piece* getPiece() const;

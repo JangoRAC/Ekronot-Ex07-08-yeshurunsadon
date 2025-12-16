@@ -1,5 +1,11 @@
 #include "Square.h"
 
+Square::Square()
+{
+	this->_position = Position(0,0);
+	this->_piece = nullptr;
+}
+
 Square::Square(const Position& pos)
 {
 	this->_position = pos;

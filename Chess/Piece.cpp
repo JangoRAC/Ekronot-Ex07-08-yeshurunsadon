@@ -1,5 +1,6 @@
 #include "Piece.h"
 
+
 Piece::Piece(const Position& pos, bool isWhite)
 {
 	this->_position = pos;
@@ -23,5 +24,10 @@ void Piece::setPosition(const Position& pos)
 const bool Piece::isWhite() const
 {
 	return this->_isWhite;
+}
+
+std::string Piece::getType() const
+{
+	return this->_type;
 }
 

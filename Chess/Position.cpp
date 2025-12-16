@@ -19,7 +19,7 @@ Position::~Position()
 
 const int Position::getRow() const
 {
-	return this->_col;
+	return this->_row;
 }
 
 const int Position::getCol() const
