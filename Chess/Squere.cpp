@@ -1,0 +1,33 @@
+#include "Square.h"
+
+Square::Square(const Position& pos)
+{
+	this->_position = pos;
+	this->_piece = nullptr;
+}
+
+Square::~Square()
+{
+	this->_piece = nullptr;
+}
+
+Piece* Square::getPiece() const
+{
+	return this->_piece;
+}
+
+Position Square::getPosition() const
+{
+	return this->_position;
+}
+
+bool Square::IsOccupied() const
+{
+	return this->_piece != nullptr;
+}
+
+void Square::setPiece(Piece* piece)
+{
+	this->_piece = piece;
+}
+
