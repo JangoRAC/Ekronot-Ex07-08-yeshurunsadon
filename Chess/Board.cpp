@@ -10,16 +10,20 @@ Board::Board()
 		}
 	}
 	this->_boardRepresentation = "";
-	Rook* blackRook1 = new Rook(Position(0, 0), false);
-	Rook* blackRook2 = new Rook(Position(0, 7), false);
-	Rook* whiteRook1 = new Rook(Position(7, 0), true);
-	Rook* whiteRook2 = new Rook(Position(7, 7), true);
+	Rook* blackRook1 = new Rook(Position(7, 0), false);
+	Rook* blackRook2 = new Rook(Position(7, 7), false);
+	Rook* whiteRook1 = new Rook(Position(0, 0), true);
+	Rook* whiteRook2 = new Rook(Position(0, 7), true);
 
-	this->_squares[0][0].setPiece(blackRook1);
-	this->_squares[0][7].setPiece(blackRook2);
-	this->_squares[7][0].setPiece(whiteRook1);
-	this->_squares[7][7].setPiece(whiteRook2);
+	this->_squares[7][0].setPiece(blackRook1);
+	this->_squares[7][7].setPiece(blackRook2);
+	this->_squares[0][0].setPiece(whiteRook1);
+	this->_squares[0][7].setPiece(whiteRook2);
 
+	King* blackKing = new King(Position(7, 4), false);
+	King* whiteKing = new King(Position(0, 4), true);
+	this->_squares[7][4].setPiece(blackKing);
+	this->_squares[0][4].setPiece(whiteKing);
 	this->updateBoard();
 }
 
@@ -180,12 +184,12 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,0 to 0,7" << std::endl;
+	std::cout << "0,0 to 7,0" << std::endl;
 	board.move(src1, pos1); //false - cant eat a piece same color as yours
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,0 to 7,0" << std::endl;
+	std::cout << "7,0 to 7,7" << std::endl;
 	board.move(src2, pos2); //true - can eat a piece different color from yours
 
 	std::cout << board.getBoardRepresentation() << std::endl;
@@ -206,6 +210,6 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << "7,5 to 0,5" << std::endl;
 	board.move(pos5, pos3); //false - cant eat a piece same color as yours
-
+	std::cout << board.getBoardRepresentation() << std::endl;
 	return 0;
 }

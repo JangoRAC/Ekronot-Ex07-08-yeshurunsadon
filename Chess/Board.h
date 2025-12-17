@@ -1,6 +1,7 @@
 #pragma once
 #include "Square.h"
 #include "Rook.h"
+#include "King.h"
 #include <iostream>
 #include <string>
 
