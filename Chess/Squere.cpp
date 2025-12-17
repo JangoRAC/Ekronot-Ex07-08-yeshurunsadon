@@ -29,7 +29,7 @@ Position Square::getPosition() const
 
 bool Square::IsOccupied() const
 {
-	return this->_piece != nullptr;
+	return this->_piece;
 }
 
 void Square::setPiece(Piece* piece)

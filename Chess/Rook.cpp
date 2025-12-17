@@ -2,7 +2,7 @@
 
 Rook::Rook(const Position& pos, bool isWhite) : Piece(pos, isWhite)
 {
-	_type = "Rook";
+	isWhite ? this->_type = "R" : this->_type = "r";
 }
 
 Rook::~Rook()
