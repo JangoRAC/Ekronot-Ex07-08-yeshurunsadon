@@ -1,6 +1,10 @@
 #pragma once
 #include "Square.h"
+#include "Rook.h"
+#include <iostream>
 #include <string>
+
+class Piece;
 
 class Board
 {
@@ -16,5 +20,7 @@ public:
 	std::string getBoardRepresentation() const;
 	bool isPositionValid(const Position& pos) const;
 	bool isPathClear(const Position& start, const Position& end) const;
+	bool canMove(Position& src, Position& dst);
+	void move(Position& src, Position& dst);
 	bool isSquareEmpty(const Position& pos) const;
 };
