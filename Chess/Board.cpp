@@ -117,7 +117,7 @@ bool Board::isPathClear(const Position& start, const Position& end) const
 	return true;
 }
 
-bool Board::canMove(Position& src, Position& dst)
+bool Board::canMove(const Position& src, const Position& dst) const
 {
 	Piece* srcPiece = this->getSquare(src).getPiece();
 	Piece* dstPiece = this->getSquare(dst).getPiece();
@@ -168,6 +168,62 @@ bool Board::isSquareEmpty(const Position& pos) const
 	return !_squares[pos.getRow()][pos.getCol()].IsOccupied();
 }
 
+bool Board::canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const
+{
+	Piece* piece = nullptr;
+	// Iterate through all squares on the board
+	for (int row = 0; row < 8; ++row)
+	{
+		for (int col = 0; col < 8; ++col)
+		{
+			piece = _squares[row][col].getPiece();
+			// Check if there is a piece of the attacking color
+			if (piece && piece->isWhite() == attackerIsWhite)
+			{
+				// Check if this piece can move to the target position
+				if (this->canMove(piece->getPosition(), pos))
+				{
+					
+					return true; // The square can be attacked
+					
+				}
+			}
+		}
+	}
+	return false; // No attacking pieces can reach the square
+}
+
+bool Board::isKingInCheck(bool isWhiteKing) const
+{
+	Position kingPos(-1, -1);
+	// Find the king's position
+	for (int row = 0; row < 8; ++row)
+	{
+		for (int col = 0; col < 8; ++col)
+		{
+			Piece* piece = _squares[row][col].getPiece();
+			if (piece && (piece->getType() == "K" || piece->getType() == "k") && piece->isWhite() == isWhiteKing)
+			{
+				kingPos = piece->getPosition();// King found
+				break;
+			}
+		}
+		if (kingPos.getRow() != -1)
+		{
+			break; // King found, exit the loop
+		}
+	}
+	if (kingPos.getRow() == -1)
+	{
+		return false; // King not found on the board
+	}
+	// Check if the king's position can be attacked by any opponent piece
+	return this->canSquereBeAttacked(kingPos, !isWhiteKing);
+}
+
+
+
+
 int main()//wrote this main function to test the can move function on the rook (whold be deleted later)
 {
 	Board board;
@@ -175,41 +231,117 @@ int main()//wrote this main function to test the can move function on the rook (
 	Position src2(7, 0);
 	Position src3(0, 7);
 	Position src4(7, 7);
+	Position src5(7, 4);
 
 	Position pos1(7, 0); // same row should be allowed 
 	Position pos2(7, 7); // same column should be allowed
 	Position pos3(0, 5); // diagonal should be false 
 	Position pos4(6, 6); // intersects with piece with the same color shold be false
 	Position pos5(7, 5);
+	Position pos6(7, 3);
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
 	std::cout << "0,0 to 7,0" << std::endl;
 	board.move(src1, pos1); //false - cant eat a piece same color as yours
-
 	std::cout << board.getBoardRepresentation() << std::endl;
+	if(board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
+
+	
 
 	std::cout << "7,0 to 7,7" << std::endl;
 	board.move(src2, pos2); //true - can eat a piece different color from yours
 
 	std::cout << board.getBoardRepresentation() << std::endl;
-	
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
+
 	std::cout << "0,7 to 0,5" << std::endl;
 	board.move(src3, pos3); //true - same row
 
 	std::cout << board.getBoardRepresentation() << std::endl;
-	
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
+
 	std::cout << "7,7 to 6,6" << std::endl;
 	board.move(src4, pos4); //false - cant move diagonaly
 
 	std::cout << board.getBoardRepresentation() << std::endl;
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
 
 	std::cout << "7,7 to 7,5" << std::endl;
 	board.move(src4, pos5); //true - same row
 	std::cout << board.getBoardRepresentation() << std::endl;
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
 
 	std::cout << "7,5 to 0,5" << std::endl;
 	board.move(pos5, pos3); //false - cant eat a piece same color as yours
 	std::cout << board.getBoardRepresentation() << std::endl;
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
+
+	std::cout << "7,4 to 7,3" << std::endl;
+	board.move(src5, pos6); //true - king move
+	std::cout << board.getBoardRepresentation() << std::endl;
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
+
+	std::cout << "7,3 to 5,3" << std::endl;
+	board.move(pos6, Position(5, 3)); //false - king move
+	std::cout << board.getBoardRepresentation() << std::endl;
+	if (board.isKingInCheck(true))
+	{
+		std::cout << "White king is in check!" << std::endl;
+	}
+	else
+	{
+		std::cout << "White king is not in check." << std::endl;
+	}
+
 	return 0;
 }

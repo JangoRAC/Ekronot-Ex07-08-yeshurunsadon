@@ -26,6 +26,8 @@ public:
 	bool isPositionValid(const Position& pos) const;
 	bool isPathClear(const Position& start, const Position& end) const;
 	bool isSquareEmpty(const Position& pos) const;
-	bool canMove(Position& src, Position& dst);
+	bool canMove(const Position& src, const Position& dst) const;
 	void move(Position src, Position dst);
+	bool canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const;
+	bool isKingInCheck(bool isWhiteKing) const;
 };
