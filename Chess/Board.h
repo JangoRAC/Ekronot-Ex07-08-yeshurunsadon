@@ -16,6 +16,7 @@ protected:
 public:
 	Board();
 	~Board();
+	Board(const Board& other);
 
 	Square& getSquare(const Position& pos);
 	const Square& getSquare(const Position& pos) const;//implemented both const and non-const versions becuse i had errors otherwise
@@ -27,7 +28,9 @@ public:
 	bool isPathClear(const Position& start, const Position& end) const;
 	bool isSquareEmpty(const Position& pos) const;
 	bool canMove(const Position& src, const Position& dst) const;
-	void move(Position src, Position dst);
+	void move(const Position& src, const Position& dst);
 	bool canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const;
 	bool isKingInCheck(bool isWhiteKing) const;
+	bool wouldMoveExposeKing(const Position& src, const Position& dst) const;
+	
 };

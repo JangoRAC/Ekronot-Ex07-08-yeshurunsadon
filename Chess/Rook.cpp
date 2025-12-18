@@ -20,3 +20,7 @@ bool Rook::canMove(const Position& dest) const
 	return true;
 }
 
+Piece* Rook::copy() const
+{
+	return new Rook(this->_position, this->_isWhite);
+}

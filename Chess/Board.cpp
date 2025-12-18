@@ -27,6 +27,10 @@ Board::Board()
 	this->updateBoard();
 }
 
+
+
+
+
 Board::~Board()
 {
 	// delete any pieces left on the board to avoid leaks
@@ -39,6 +43,37 @@ Board::~Board()
 			{
 				delete p;
 				_squares[r][c].setPiece(nullptr);
+			}
+		}
+	}
+}
+
+
+
+Board::Board(const Board& other)
+{
+	Piece* otherPiece = nullptr;
+	// Copy squares and pieces
+	for (int row = 0; row < 8; ++row)
+	{
+		for (int col = 0; col < 8; ++col)
+		{
+			this->_squares[row][col] = Square(Position(row, col));
+		}
+	}
+	this->_boardRepresentation = other._boardRepresentation;
+	for(int row = 0; row < 8; ++row)
+	{
+		for(int col = 0; col < 8; ++col)
+		{
+			otherPiece = other._squares[row][col].getPiece();
+			if(otherPiece)
+			{
+				this->_squares[row][col].setPiece(otherPiece->copy());
+			}
+			else
+			{
+				this->_squares[row][col].setPiece(nullptr);
 			}
 		}
 	}
@@ -149,10 +184,10 @@ bool Board::canMove(const Position& src, const Position& dst) const
 	return false;
 }
 
-void Board::move(Position src, Position dst)
+void Board::move(const Position& src, const Position& dst)
 {
 	Piece* srcPiece = this->getSquare(src).getPiece();
-	if (this->canMove(src, dst))
+	if (this->canMove(src, dst) && !this->wouldMoveExposeKing(src, dst))
 	{
 		srcPiece->move(dst);//update the piece position
 		// Move the piece on the board
@@ -162,6 +197,11 @@ void Board::move(Position src, Position dst)
 	}
 
 }
+
+
+
+
+
 
 bool Board::isSquareEmpty(const Position& pos) const
 {
@@ -191,6 +231,39 @@ bool Board::canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const
 		}
 	}
 	return false; // No attacking pieces can reach the square
+}
+
+
+
+bool Board::wouldMoveExposeKing(const Position& src, const Position& dst) const
+{
+	Board tempBoard = *this; // Create a copy of the current board
+	Piece* movingPiece = tempBoard.getSquare(src).getPiece();
+	if (!movingPiece)
+	{
+		return false; // No piece to move
+	}
+	bool isWhiteKing = movingPiece->isWhite();
+	// Simulate the move on the temporary board
+	if (tempBoard.canMove(src, dst))
+	{
+		movingPiece->move(dst); // Update the piece's position
+		tempBoard.getSquare(dst).setPiece(movingPiece);
+		tempBoard.getSquare(src).setPiece(nullptr);
+		// Check if the king of the moving piece's color is in check after the move
+		if (tempBoard.isKingInCheck(isWhiteKing))
+		{
+			
+			std::cout << "Move would expose king to check!" << std::endl;
+		}
+
+		return tempBoard.isKingInCheck(isWhiteKing);
+	}
+	else
+	{
+		return false; // Invalid move, so it doesn't expose the king
+	}
+	
 }
 
 bool Board::isKingInCheck(bool isWhiteKing) const
@@ -224,6 +297,7 @@ bool Board::isKingInCheck(bool isWhiteKing) const
 
 
 
+
 int main()//wrote this main function to test the can move function on the rook (whold be deleted later)
 {
 	Board board;
@@ -242,106 +316,31 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,0 to 7,0" << std::endl;
-	board.move(src1, pos1); //false - cant eat a piece same color as yours
+	std::cout << "0,0 to 6, 0" << std::endl;
+	board.move(Position(0, 0), Position(6, 0));
 	std::cout << board.getBoardRepresentation() << std::endl;
-	if(board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
 
-	
-
-	std::cout << "7,0 to 7,7" << std::endl;
-	board.move(src2, pos2); //true - can eat a piece different color from yours
-
+	std::cout << "7,0 to 7, 3" << std::endl;
+	board.move(Position(7, 0), Position(7, 3));
 	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
 
-	std::cout << "0,7 to 0,5" << std::endl;
-	board.move(src3, pos3); //true - same row
-
+	std::cout << "6,0 to 7,0" << std::endl;
+	board.move(Position(6, 0), Position(7, 0));
 	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
 
-	std::cout << "7,7 to 6,6" << std::endl;
-	board.move(src4, pos4); //false - cant move diagonaly
-
+	std::cout << "7,3 to 6,3" << std::endl;
+	board.move(Position(7, 3), Position(6, 3));//should not move becuse it would expose the king to check
 	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
 
-	std::cout << "7,7 to 7,5" << std::endl;
-	board.move(src4, pos5); //true - same row
+	std::cout << "7,0 to 7,3" << std::endl;
+	board.move(Position(7, 0), Position(7, 3));
 	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
-
-	std::cout << "7,5 to 0,5" << std::endl;
-	board.move(pos5, pos3); //false - cant eat a piece same color as yours
-	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
 
 	std::cout << "7,4 to 7,3" << std::endl;
-	board.move(src5, pos6); //true - king move
+	board.move(Position(7, 4), Position(7, 3));
 	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
 
-	std::cout << "7,3 to 5,3" << std::endl;
-	board.move(pos6, Position(5, 3)); //false - king move
-	std::cout << board.getBoardRepresentation() << std::endl;
-	if (board.isKingInCheck(true))
-	{
-		std::cout << "White king is in check!" << std::endl;
-	}
-	else
-	{
-		std::cout << "White king is not in check." << std::endl;
-	}
+
 
 	return 0;
 }

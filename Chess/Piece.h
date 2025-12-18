@@ -14,6 +14,7 @@ public:
 	std::string getType() const;
 	virtual bool canMove(const Position& dst) const = 0;
 	void move(const Position& dst);
+	virtual Piece* copy() const = 0;
 
 protected:
 	Position _position;

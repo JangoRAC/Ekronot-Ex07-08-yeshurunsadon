@@ -7,5 +7,5 @@ class King : public Piece
 	King(const Position& pos, bool isWhite);
 	~King();
 	virtual bool canMove(const Position& dst) const override;
-
+	virtual Piece* copy() const override;
 };

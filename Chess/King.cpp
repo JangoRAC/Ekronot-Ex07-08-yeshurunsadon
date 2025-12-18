@@ -21,3 +21,8 @@ bool King::canMove(const Position& dst) const
 	}
 	return false;
 }
+
+Piece* King::copy() const
+{
+	return new King(this->_position, this->_isWhite);
+}
