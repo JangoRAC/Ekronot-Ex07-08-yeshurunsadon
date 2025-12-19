@@ -21,20 +21,25 @@ Board::Board()
 	this->_squares[0][0].setPiece(whiteRook1);
 	this->_squares[0][7].setPiece(whiteRook2);
 
-	King* blackKing = new King(Position(7, 4), false);
-	King* whiteKing = new King(Position(0, 4), true);
-	this->_squares[7][4].setPiece(blackKing);
-	this->_squares[0][4].setPiece(whiteKing);
+	King* blackKing = new King(Position(7, 3), false);
+	King* whiteKing = new King(Position(0, 3), true);
+	this->_squares[7][3].setPiece(blackKing);
+	this->_squares[0][3].setPiece(whiteKing);
 
 
-	Bishop* whiteBishop1 = new Bishop(Position(0, 1), true);
-	Bishop* whiteBishop2 = new Bishop(Position(0, 6), true);
-	Bishop* blackBishop1 = new Bishop(Position(7, 1), false);
-	Bishop* blackBishop2 = new Bishop(Position(7, 6), false);
-	this->_squares[0][1].setPiece(whiteBishop1);
-	this->_squares[0][6].setPiece(whiteBishop2);
-	this->_squares[7][1].setPiece(blackBishop1);
-	this->_squares[7][6].setPiece(blackBishop2);
+	Bishop* whiteBishop1 = new Bishop(Position(0, 2), true);
+	Bishop* whiteBishop2 = new Bishop(Position(0, 2), true);
+	Bishop* blackBishop1 = new Bishop(Position(7, 2), false);
+	Bishop* blackBishop2 = new Bishop(Position(7, 2), false);
+	this->_squares[0][2].setPiece(whiteBishop1);
+	this->_squares[0][5].setPiece(whiteBishop2);
+	this->_squares[7][2].setPiece(blackBishop1);
+	this->_squares[7][5].setPiece(blackBishop2);
+
+	Queen* whiteQueen = new Queen(Position(0,4), true);
+	Queen* blackQueen = new Queen(Position(7, 4), false);
+	this->_squares[0][4].setPiece(whiteQueen);
+	this->_squares[7][4].setPiece(blackQueen);
 
 	this->updateBoard();
 
@@ -330,29 +335,20 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,1 to 4,5" << std::endl;
-	board.move(Position(0, 1), Position(4, 5));
+	std::cout << "0,4 to 1,4" << std::endl;
+	board.move(Position(0, 4), Position(1, 4));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-
-	std::cout << "4,5 to 5, 7" << std::endl;
-	board.move(Position(4, 5), Position(5, 7));//shold not move
-	std::cout << board.getBoardRepresentation();
-
-	std::cout << "7,6 to 4,3" << std::endl;
-	board.move(Position(7, 6), Position(4, 3));
+	std::cout << "1,4 to 3,0" << std::endl;
+	board.move(Position(1, 4), Position(3, 0));//shold not move
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "7,7 to 7,5" << std::endl;
-	board.move(Position(7, 7), Position(7, 5));
+	std::cout << "1,4 to 3,6" << std::endl;
+	board.move(Position(1, 4), Position(3, 6));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,4 to 0, 5" << std::endl;
-	board.move(Position(0, 4), Position(0, 5));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "4,5 to 5,6" << std::endl;
-	board.move(Position(4, 5), Position(5, 6));//shold not move
+	std::cout << "3,6 to 3, 1" << std::endl;
+	board.move(Position(3, 6), Position(3, 1));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
 	return 0;
