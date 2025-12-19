@@ -2,6 +2,7 @@
 #include "Square.h"
 #include "Rook.h"
 #include "King.h"
+#include "Bishop.h"
 #include <iostream>
 #include <string>
 

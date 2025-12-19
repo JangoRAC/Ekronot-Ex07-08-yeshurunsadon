@@ -10,6 +10,7 @@ Board::Board()
 		}
 	}
 	this->_boardRepresentation = "";
+	//placin pieces on the board
 	Rook* blackRook1 = new Rook(Position(7, 0), false);
 	Rook* blackRook2 = new Rook(Position(7, 7), false);
 	Rook* whiteRook1 = new Rook(Position(0, 0), true);
@@ -24,7 +25,20 @@ Board::Board()
 	King* whiteKing = new King(Position(0, 4), true);
 	this->_squares[7][4].setPiece(blackKing);
 	this->_squares[0][4].setPiece(whiteKing);
+
+
+	Bishop* whiteBishop1 = new Bishop(Position(0, 1), true);
+	Bishop* whiteBishop2 = new Bishop(Position(0, 6), true);
+	Bishop* blackBishop1 = new Bishop(Position(7, 1), false);
+	Bishop* blackBishop2 = new Bishop(Position(7, 6), false);
+	this->_squares[0][1].setPiece(whiteBishop1);
+	this->_squares[0][6].setPiece(whiteBishop2);
+	this->_squares[7][1].setPiece(blackBishop1);
+	this->_squares[7][6].setPiece(blackBishop2);
+
 	this->updateBoard();
+
+	
 }
 
 
@@ -237,7 +251,7 @@ bool Board::canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const
 
 bool Board::wouldMoveExposeKing(const Position& src, const Position& dst) const
 {
-	Board tempBoard = *this; // Create a copy of the current board
+	Board tempBoard(*this); // Create a copy of the current board
 	Piece* movingPiece = tempBoard.getSquare(src).getPiece();
 	if (!movingPiece)
 	{
@@ -316,31 +330,30 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,0 to 6, 0" << std::endl;
-	board.move(Position(0, 0), Position(6, 0));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "7,0 to 7, 3" << std::endl;
-	board.move(Position(7, 0), Position(7, 3));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "6,0 to 7,0" << std::endl;
-	board.move(Position(6, 0), Position(7, 0));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "7,3 to 6,3" << std::endl;
-	board.move(Position(7, 3), Position(6, 3));//should not move becuse it would expose the king to check
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "7,0 to 7,3" << std::endl;
-	board.move(Position(7, 0), Position(7, 3));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "7,4 to 7,3" << std::endl;
-	board.move(Position(7, 4), Position(7, 3));
+	std::cout << "0,1 to 4,5" << std::endl;
+	board.move(Position(0, 1), Position(4, 5));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
 
+	std::cout << "4,5 to 5, 7" << std::endl;
+	board.move(Position(4, 5), Position(5, 7));//shold not move
+	std::cout << board.getBoardRepresentation();
+
+	std::cout << "7,6 to 4,3" << std::endl;
+	board.move(Position(7, 6), Position(4, 3));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "7,7 to 7,5" << std::endl;
+	board.move(Position(7, 7), Position(7, 5));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "0,4 to 0, 5" << std::endl;
+	board.move(Position(0, 4), Position(0, 5));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "4,5 to 5,6" << std::endl;
+	board.move(Position(4, 5), Position(5, 6));//shold not move
+	std::cout << board.getBoardRepresentation() << std::endl;
 
 	return 0;
 }

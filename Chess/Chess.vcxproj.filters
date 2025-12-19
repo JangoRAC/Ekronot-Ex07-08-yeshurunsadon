@@ -33,6 +33,9 @@
     <ClInclude Include="King.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bishop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Position.cpp">
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="King.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bishop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
