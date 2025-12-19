@@ -41,6 +41,16 @@ Board::Board()
 	this->_squares[0][4].setPiece(whiteQueen);
 	this->_squares[7][4].setPiece(blackQueen);
 
+	Knight* whiteKnight1 = new Knight(Position(0, 1), true);
+	Knight* whiteKnight2 = new Knight(Position(0, 6), true);
+	Knight* blackKnight1 = new Knight(Position(7, 1), false);
+	Knight* blackKnight2 = new Knight(Position(7, 7), false);
+	this->_squares[0][1].setPiece(whiteKnight1);
+	this->_squares[0][6].setPiece(whiteKnight2);
+	this->_squares[7][1].setPiece(blackKnight1);
+	this->_squares[7][6].setPiece(blackKnight2);
+	
+
 	this->updateBoard();
 
 	
@@ -184,7 +194,7 @@ bool Board::canMove(const Position& src, const Position& dst) const
 		return false; // No piece at source
 	}
 	// Check if the path is clear
-	if (!this->isPathClear(src, dst))
+	if (!this->isPathClear(src, dst) && srcPiece->getType() != "N" && srcPiece->getType() != "n")
 	{
 		return false;
 	}
@@ -349,6 +359,34 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << "3,6 to 3, 1" << std::endl;
 	board.move(Position(3, 6), Position(3, 1));
+	std::cout << board.getBoardRepresentation() << std::endl;
+	
+	std::cout << "0,1 to 2,2" << std::endl;
+	board.move(Position(0, 1), Position(2, 2));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "3,1 to 4,1" << std::endl;
+	board.move(Position(3, 1), Position(4, 1));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "2,2 to 4,1" << std::endl;
+	board.move(Position(2, 2), Position(4, 1));//shold not move
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "2,2 to 5,1" << std::endl;
+	board.move(Position(2, 2), Position(4, 1));//shold not move
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "7,0 to 4, 0" << std::endl;
+	board.move(Position(7, 0), Position(4, 0));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "4,0 to 4, 1" << std::endl;
+	board.move(Position(4, 0), Position(4, 1));
+	std::cout << board.getBoardRepresentation() << std::endl;
+
+	std::cout << "2,2 to 4,1" << std::endl;
+	board.move(Position(2, 2), Position(4, 1));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
 	return 0;

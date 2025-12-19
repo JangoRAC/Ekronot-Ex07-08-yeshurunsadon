@@ -4,6 +4,7 @@
 #include "King.h"
 #include "Bishop.h"
 #include "Queen.h";
+#include "Knight.h"
 #include <iostream>
 #include <string>
 
