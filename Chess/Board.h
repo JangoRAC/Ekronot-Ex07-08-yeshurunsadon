@@ -5,6 +5,7 @@
 #include "Bishop.h"
 #include "Queen.h";
 #include "Knight.h"
+#include "Pon.h"
 #include <iostream>
 #include <string>
 
@@ -35,5 +36,7 @@ public:
 	bool canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const;
 	bool isKingInCheck(bool isWhiteKing) const;
 	bool wouldMoveExposeKing(const Position& src, const Position& dst) const;
+	bool canPonMove(const Position& src, const Position& dst) const;
+	bool isTherePieceInDiagonal(const Position& pos) const;
 	
 };

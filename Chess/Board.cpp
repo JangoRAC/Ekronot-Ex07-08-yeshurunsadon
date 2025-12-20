@@ -44,12 +44,45 @@ Board::Board()
 	Knight* whiteKnight1 = new Knight(Position(0, 1), true);
 	Knight* whiteKnight2 = new Knight(Position(0, 6), true);
 	Knight* blackKnight1 = new Knight(Position(7, 1), false);
-	Knight* blackKnight2 = new Knight(Position(7, 7), false);
+	Knight* blackKnight2 = new Knight(Position(7, 6), false);
 	this->_squares[0][1].setPiece(whiteKnight1);
 	this->_squares[0][6].setPiece(whiteKnight2);
 	this->_squares[7][1].setPiece(blackKnight1);
 	this->_squares[7][6].setPiece(blackKnight2);
 	
+	Pon* whitePon1 = new Pon(Position(1, 0), true);
+	Pon* whitePon2 = new Pon(Position(1, 1), true);
+	Pon* whitePon3 = new Pon(Position(1, 2), true);
+	Pon* whitePon4 = new Pon(Position(1, 3), true);
+	Pon* whitePon5 = new Pon(Position(1, 4), true);
+	Pon* whitePon6 = new Pon(Position(1, 5), true);
+	Pon* whitePon7 = new Pon(Position(1, 6), true);
+	Pon* whitePon8 = new Pon(Position(1, 7), true);
+	this->_squares[1][0].setPiece(whitePon1);
+	this->_squares[1][1].setPiece(whitePon2);
+	this->_squares[1][2].setPiece(whitePon3);
+	this->_squares[1][3].setPiece(whitePon4);
+	this->_squares[1][4].setPiece(whitePon5);
+	this->_squares[1][5].setPiece(whitePon6);
+	this->_squares[1][6].setPiece(whitePon7);
+	this->_squares[1][7].setPiece(whitePon8);
+
+	Pon* blackPon1 = new Pon(Position(6, 0), false);
+	Pon* blackPon2 = new Pon(Position(6, 1), false);
+	Pon* blackPon3 = new Pon(Position(6, 2), false);
+	Pon* blackPon4 = new Pon(Position(6, 3), false);
+	Pon* blackPon5 = new Pon(Position(6, 4), false);
+	Pon* blackPon6 = new Pon(Position(6, 5), false);
+	Pon* blackPon7 = new Pon(Position(6, 6), false);
+	Pon* blackPon8 = new Pon(Position(6, 7), false);
+	this->_squares[6][0].setPiece(blackPon1);
+	this->_squares[6][1].setPiece(blackPon2);
+	this->_squares[6][2].setPiece(blackPon3);
+	this->_squares[6][3].setPiece(blackPon4);
+	this->_squares[6][4].setPiece(blackPon5);
+	this->_squares[6][5].setPiece(blackPon6);
+	this->_squares[6][6].setPiece(blackPon7);
+	this->_squares[6][7].setPiece(blackPon8);
 
 	this->updateBoard();
 
@@ -82,7 +115,7 @@ Board::~Board()
 Board::Board(const Board& other)
 {
 	Piece* otherPiece = nullptr;
-	// Copy squares and pieces
+	// Copy squares
 	for (int row = 0; row < 8; ++row)
 	{
 		for (int col = 0; col < 8; ++col)
@@ -90,7 +123,8 @@ Board::Board(const Board& other)
 			this->_squares[row][col] = Square(Position(row, col));
 		}
 	}
-	this->_boardRepresentation = other._boardRepresentation;
+	this->_boardRepresentation = other._boardRepresentation;//copy board representatio
+	//copy picecs
 	for(int row = 0; row < 8; ++row)
 	{
 		for(int col = 0; col < 8; ++col)
@@ -193,6 +227,10 @@ bool Board::canMove(const Position& src, const Position& dst) const
 	{
 		return false; // No piece at source
 	}
+	if (srcPiece->getType() == "P" || srcPiece->getType() == "p")
+	{
+		return canPonMove(src, dst);//specificly for the pon logic
+	}
 	// Check if the path is clear
 	if (!this->isPathClear(src, dst) && srcPiece->getType() != "N" && srcPiece->getType() != "n")
 	{
@@ -250,11 +288,17 @@ bool Board::canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const
 			if (piece && piece->isWhite() == attackerIsWhite)
 			{
 				// Check if this piece can move to the target position
-				if (this->canMove(piece->getPosition(), pos))
-				{
-					
+				if (this->canMove(piece->getPosition(), pos) && piece->getType() != "P" && piece->getType() != "p")
+				{					
 					return true; // The square can be attacked
-					
+				}
+				if (piece->getType() == "P" || piece->getType() == "p")
+				{
+					Pon* pon = (Pon*)(piece);
+					if (pon->canPonAttack(pos))
+					{
+						return true;
+					}
 				}
 			}
 		}
@@ -293,6 +337,56 @@ bool Board::wouldMoveExposeKing(const Position& src, const Position& dst) const
 		return false; // Invalid move, so it doesn't expose the king
 	}
 	
+}
+
+bool Board::canPonMove(const Position& src, const Position& dst) const
+{
+	Piece* srcPiece = this->getSquare(src).getPiece();
+	Piece* dstPiece = this->getSquare(dst).getPiece();
+	Pon* pon = (Pon*)(srcPiece);//converting the base piece to a pon specificly
+	if (!isPositionValid(src) || !isPositionValid(dst))
+	{
+		return false;
+	}
+	if (!srcPiece)
+	{
+		return false; // No piece at source
+	}
+	if (dstPiece)
+	{
+		if (srcPiece->isWhite() == dstPiece->isWhite())
+		{
+			return false;
+		}
+	}
+	// Check if the path is clear
+	if (!this->isPathClear(src, dst))
+	{
+		return false;
+	}
+	if (src.getCol() == dst.getCol() && !this->isSquareEmpty(dst))
+	{//if there is a piece at the destination squere the pon cant move even if it is an enemy piece
+		return false;
+	}
+	if (isTherePieceInDiagonal(src))
+	{		
+		pon->setPieceInDiagonal(true);
+	}
+	else
+	{
+		pon->setPieceInDiagonal(false);
+	}
+	return pon->canMove(dst);
+	
+
+
+}
+
+bool Board::isTherePieceInDiagonal(const Position& pos) const
+{
+	int row = pos.getRow();
+	int col = pos.getCol();
+	return this->_squares[row + 1][col + 1].IsOccupied() || this->_squares[row - 1][col + 1].IsOccupied() || this->_squares[row + 1][col - 1].IsOccupied() || this->_squares[row - 1][col - 1].IsOccupied();
 }
 
 bool Board::isKingInCheck(bool isWhiteKing) const
@@ -345,48 +439,32 @@ int main()//wrote this main function to test the can move function on the rook (
 
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "0,4 to 1,4" << std::endl;
-	board.move(Position(0, 4), Position(1, 4));
+	std::cout << "1,0 to 3,0" << std::endl;
+	board.move(Position(1, 0), Position(3, 0));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "1,4 to 3,0" << std::endl;
-	board.move(Position(1, 4), Position(3, 0));//shold not move
+	std::cout << "3,0 to 5, 0" << std::endl;
+	board.move(Position(3, 0), Position(5, 0));//shold not move
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "1,4 to 3,6" << std::endl;
-	board.move(Position(1, 4), Position(3, 6));
+	std::cout << "3,0 to 4,0" << std::endl;
+	board.move(Position(3, 0), Position(4, 0));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "3,6 to 3, 1" << std::endl;
-	board.move(Position(3, 6), Position(3, 1));
-	std::cout << board.getBoardRepresentation() << std::endl;
-	
-	std::cout << "0,1 to 2,2" << std::endl;
-	board.move(Position(0, 1), Position(2, 2));
+	std::cout << "6,1 to 5,1" << std::endl;
+	board.move(Position(6, 1), Position(5, 1));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "3,1 to 4,1" << std::endl;
-	board.move(Position(3, 1), Position(4, 1));
+	std::cout << "6,0 to 5, 0" << std::endl;
+	board.move(Position(6, 0), Position(5, 0));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "2,2 to 4,1" << std::endl;
-	board.move(Position(2, 2), Position(4, 1));//shold not move
+	std::cout << "4,0 to 5, 0" << std::endl;
+	board.move(Position(4, 0), Position(5, 0));//shold not move
 	std::cout << board.getBoardRepresentation() << std::endl;
 
-	std::cout << "2,2 to 5,1" << std::endl;
-	board.move(Position(2, 2), Position(4, 1));//shold not move
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "7,0 to 4, 0" << std::endl;
-	board.move(Position(7, 0), Position(4, 0));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "4,0 to 4, 1" << std::endl;
-	board.move(Position(4, 0), Position(4, 1));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "2,2 to 4,1" << std::endl;
-	board.move(Position(2, 2), Position(4, 1));
+	std::cout << "4,0 to 5, 1" << std::endl;
+	board.move(Position(4, 0), Position(5, 1));
 	std::cout << board.getBoardRepresentation() << std::endl;
 
 	return 0;
