@@ -2,9 +2,9 @@
 
 Board::Board()
 {
-	for (int row = 0; row < 8; ++row)
+	for (int row = 0; row < 8; row++)
 	{
-		for (int col = 0; col < 8; ++col)
+		for (int col = 0; col < 8; col++)
 		{
 			this->_squares[row][col] = Square(Position(row, col));
 		}
@@ -96,9 +96,9 @@ Board::Board()
 Board::~Board()
 {
 	// delete any pieces left on the board to avoid leaks
-	for (int r = 0; r < 8; ++r)
+	for (int r = 0; r < 8; r++)
 	{
-		for (int c = 0; c < 8; ++c)
+		for (int c = 0; c < 8; c++)
 		{
 			Piece* p = _squares[r][c].getPiece();
 			if (p)
@@ -116,18 +116,18 @@ Board::Board(const Board& other)
 {
 	Piece* otherPiece = nullptr;
 	// Copy squares
-	for (int row = 0; row < 8; ++row)
+	for (int row = 0; row < 8; row++)
 	{
-		for (int col = 0; col < 8; ++col)
+		for (int col = 0; col < 8; col++)
 		{
 			this->_squares[row][col] = Square(Position(row, col));
 		}
 	}
 	this->_boardRepresentation = other._boardRepresentation;//copy board representatio
 	//copy picecs
-	for(int row = 0; row < 8; ++row)
+	for(int row = 0; row < 8; row++)
 	{
-		for(int col = 0; col < 8; ++col)
+		for(int col = 0; col < 8; col++)
 		{
 			otherPiece = other._squares[row][col].getPiece();
 			if(otherPiece)
@@ -217,6 +217,7 @@ bool Board::isPathClear(const Position& start, const Position& end) const
 
 bool Board::canMove(const Position& src, const Position& dst) const
 {
+
 	Piece* srcPiece = this->getSquare(src).getPiece();
 	Piece* dstPiece = this->getSquare(dst).getPiece();
 	if(!isPositionValid(src) || !isPositionValid(dst))
@@ -265,11 +266,6 @@ void Board::move(const Position& src, const Position& dst)
 
 }
 
-
-
-
-
-
 bool Board::isSquareEmpty(const Position& pos) const
 {
 	return !_squares[pos.getRow()][pos.getCol()].IsOccupied();
@@ -279,14 +275,15 @@ bool Board::canSquereBeAttacked(const Position& pos, bool attackerIsWhite) const
 {
 	Piece* piece = nullptr;
 	// Iterate through all squares on the board
-	for (int row = 0; row < 8; ++row)
+	for (int row = 0; row < 8; row++)
 	{
-		for (int col = 0; col < 8; ++col)
+		for (int col = 0; col < 8; col++)
 		{
 			piece = _squares[row][col].getPiece();
 			// Check if there is a piece of the attacking color
 			if (piece && piece->isWhite() == attackerIsWhite)
 			{
+
 				// Check if this piece can move to the target position
 				if (this->canMove(piece->getPosition(), pos) && piece->getType() != "P" && piece->getType() != "p")
 				{					
@@ -391,25 +388,27 @@ bool Board::isTherePieceInDiagonal(const Position& pos) const
 
 bool Board::isKingInCheck(bool isWhiteKing) const
 {
-	Position kingPos(-1, -1);
+	Position kingPos;
+	bool foundKing = false;
 	// Find the king's position
-	for (int row = 0; row < 8; ++row)
+	for (int row = 0; row < 8; row++)
 	{
-		for (int col = 0; col < 8; ++col)
+		for (int col = 0; col < 8; col++)
 		{
 			Piece* piece = _squares[row][col].getPiece();
 			if (piece && (piece->getType() == "K" || piece->getType() == "k") && piece->isWhite() == isWhiteKing)
 			{
-				kingPos = piece->getPosition();// King found
+				kingPos = Position(piece->getPosition());// King found
+				foundKing = true;
 				break;
 			}
 		}
-		if (kingPos.getRow() != -1)
+		if (foundKing) 
 		{
 			break; // King found, exit the loop
 		}
 	}
-	if (kingPos.getRow() == -1)
+	if (!foundKing)
 	{
 		return false; // King not found on the board
 	}
@@ -417,55 +416,11 @@ bool Board::isKingInCheck(bool isWhiteKing) const
 	return this->canSquereBeAttacked(kingPos, !isWhiteKing);
 }
 
-
-
-
-
-int main()//wrote this main function to test the can move function on the rook (whold be deleted later)
-{
-	Board board;
-	Position src1(0, 0);
-	Position src2(7, 0);
-	Position src3(0, 7);
-	Position src4(7, 7);
-	Position src5(7, 4);
-
-	Position pos1(7, 0); // same row should be allowed 
-	Position pos2(7, 7); // same column should be allowed
-	Position pos3(0, 5); // diagonal should be false 
-	Position pos4(6, 6); // intersects with piece with the same color shold be false
-	Position pos5(7, 5);
-	Position pos6(7, 3);
-
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "1,0 to 3,0" << std::endl;
-	board.move(Position(1, 0), Position(3, 0));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "3,0 to 5, 0" << std::endl;
-	board.move(Position(3, 0), Position(5, 0));//shold not move
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "3,0 to 4,0" << std::endl;
-	board.move(Position(3, 0), Position(4, 0));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "6,1 to 5,1" << std::endl;
-	board.move(Position(6, 1), Position(5, 1));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "6,0 to 5, 0" << std::endl;
-	board.move(Position(6, 0), Position(5, 0));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "4,0 to 5, 0" << std::endl;
-	board.move(Position(4, 0), Position(5, 0));//shold not move
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	std::cout << "4,0 to 5, 1" << std::endl;
-	board.move(Position(4, 0), Position(5, 1));
-	std::cout << board.getBoardRepresentation() << std::endl;
-
-	return 0;
-}
+//int main()
+//{
+//	Board board = Board();
+//
+//	board.move(Position(1, 0), Position(2, 0));
+//	std::cout << board.getBoardRepresentation() << std::endl;
+//	return 0;
+//}
