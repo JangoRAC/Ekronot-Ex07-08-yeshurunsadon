@@ -28,6 +28,8 @@ void main()
 
 	Game game = Game();
 	Position* positions;
+	Position src;
+	Position dst;
 	int code = 0;
 
 	string ans;
@@ -62,13 +64,18 @@ void main()
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 
+	positions = game.getPositionFromMessage(msgFromGraphics);
+	src = positions[0];
+	dst = positions[1];
+	code = game.makeTurn(src, dst);
+
 	while (msgFromGraphics != "quit")
 	{
 		// should handle the string the sent from graphics
 		// according the protocol. Ex: e2e4           (move e2 to e4)
 		
 		// YOUR CODE
-		//strcpy_s(msgToGraphics, "0"); // msgToGraphics should contain the result of the operation
+		//strcpy_s(msgToGraphics, "YOUR CODE"); // msgToGraphics should contain the result of the operation
 
 		///******* JUST FOR EREZ DEBUGGING ******/
 		//int r = rand() % 10; // just for debugging......
@@ -80,13 +87,14 @@ void main()
 		msgToGraphics[1] = 0;
 
 		// return result to graphics		
-		p.sendMessageToGraphics(msgToGraphics);   
+		p.sendMessageToGraphics(msgToGraphics);
 
 		// get message from graphics
 		msgFromGraphics = p.getMessageFromGraphics();
 		positions = game.getPositionFromMessage(msgFromGraphics);
-		code = game.makeTurn(positions[0], positions[1]);
-		
+		src = positions[0];
+		dst = positions[1];
+		code = game.makeTurn(src, dst);
 	}
 
 	p.close();

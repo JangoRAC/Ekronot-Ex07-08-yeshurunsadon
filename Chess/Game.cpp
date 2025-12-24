@@ -20,8 +20,8 @@ const bool Game::getIsWhiteTurn() const
 int Game::makeTurn(Position src, Position dst)
 {//check if the move is valid and the moved player is in the correct color
 	int code = 0;
+	Piece* srcPiece = this->_board.getSquare(src).getPiece();
 	Piece* dstPiece = this->_board.getSquare(dst).getPiece();
-	Piece* srcPiece = this->_board.getSquare(dst).getPiece();
 	if (this->_board.canMove(src, dst) && !this->_board.wouldMoveExposeKing(src, dst) && this->_board.getSquare(src).getPiece()->isWhite() == this->_isWhiteTurn)
 	{
 		this->_board.move(src, dst);
@@ -31,8 +31,7 @@ int Game::makeTurn(Position src, Position dst)
 		}
 		this->_isWhiteTurn = !this->_isWhiteTurn;
 	}
-	else if (!this->_board.getSquare(src).getPiece() || 
-	this->_board.getSquare(src).getPiece()->isWhite() != this->_isWhiteTurn)
+	else if (!srcPiece || srcPiece->isWhite() != this->_isWhiteTurn)
 	{
 		code = 2;
 	}
@@ -48,7 +47,7 @@ int Game::makeTurn(Position src, Position dst)
 	{
 		code = 5;
 	}
-	else if (!srcPiece->canMove(dst))
+	else if (srcPiece && !srcPiece->canMove(dst) || !this->_board.isPathClear(src, dst))
 	{
 		code = 6;
 	}
@@ -66,7 +65,7 @@ Board Game::getBoard() const
 
 Position* Game::getPositionFromMessage(const std::string msg)
 {
-	Position positions[2] = { Position(msg[0] - 'a' + '0', msg[1] - '0'), Position(msg[2] - 'a' + '0', msg[3] - '0') };
+	Position positions[2] = { Position(msg[1] - '1', msg[0] - 'a'), Position(msg[3] - '1', msg[2] - 'a') };
 
 	return positions;
 }
@@ -74,53 +73,66 @@ Position* Game::getPositionFromMessage(const std::string msg)
 //int main()
 //{
 //	Game game = Game();
+//	int code = 0;
 //
 //	std::cout << "6, 0 to 5, 0" << std::endl;
-//	game.makeTurn(Position(6, 0), Position(5, 0));//should not move
+//	code = game.makeTurn(Position(6, 0), Position(5, 0));//should not move
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "1, 0 to 2, 0" << std::endl;
-//	game.makeTurn(Position(1, 0), Position(2, 0));
+//	code = game.makeTurn(Position(1, 0), Position(2, 0));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "2, 0 to 3, 0" << std::endl;
-//	game.makeTurn(Position(2, 0), Position(3, 0));//shold not move
+//	code = game.makeTurn(Position(2, 0), Position(3, 0));//shold not move
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "6, 0 to 5, 0" << std::endl;
-//	game.makeTurn(Position(6, 0), Position(5, 0));
+//	code = game.makeTurn(Position(6, 0), Position(5, 0));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
-//	std::cout << "0, 0 to 4, 0" << std::endl;
-//	game.makeTurn(Position(0, 0), Position(4, 0));//shoul not move
+//	std::cout << "0, 0 to 4, 0" << std::endl; //check code error
+//	code = game.makeTurn(Position(0, 0), Position(4, 0));//shoul not move
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "0, 0 to 1, 0" << std::endl;
-//	game.makeTurn(Position(0, 0), Position(1, 0));
+//	code = game.makeTurn(Position(0, 0), Position(1, 0));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "0, 6 to 2, 5" << std::endl;
-//	game.makeTurn(Position(0, 6), Position(2, 5));//shold not move
+//	code = game.makeTurn(Position(0, 6), Position(2, 5));//shold not move
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //	
 //	std::cout << "7, 6 to 5, 5" << std::endl;
-//	game.makeTurn(Position(7, 6), Position(5, 5));
+//	code = game.makeTurn(Position(7, 6), Position(5, 5));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "0, 6 to 2, 5" << std::endl;
-//	game.makeTurn(Position(0, 6), Position(2, 5));
+//	code = game.makeTurn(Position(0, 6), Position(2, 5));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "6, 1 to 4, 1" << std::endl;
-//	game.makeTurn(Position(6, 1), Position(4, 1));
+//	code = game.makeTurn(Position(6, 1), Position(4, 1));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "2, 0 to 3, 0" << std::endl;
-//	game.makeTurn(Position(2, 0), Position(3, 0));
+//	code = game.makeTurn(Position(2, 0), Position(3, 0));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //	std::cout << "4, 1 to 3, 0" << std::endl;
-//	game.makeTurn(Position(4, 1), Position(3, 0));
+//	code = game.makeTurn(Position(4, 1), Position(3, 0));
+//	std::cout << code << std::endl;
 //	std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 //
 //
