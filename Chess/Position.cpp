@@ -26,3 +26,8 @@ const int Position::getCol() const
 {
 	return this->_col;
 }
+
+bool Position::operator==(const Position& other) const
+{
+	return this->_row == other.getRow() && this->_col == other.getCol();
+}

@@ -11,6 +11,7 @@ in order to read and write information from and to the Backend
 #include <string.h>
 #include <thread>
 #include <chrono>
+#include "Game.h"
 
 using std::cout;
 using std::endl;
@@ -24,7 +25,11 @@ void main()
 	
 	Pipe p;
 	bool isConnect = p.connect();
-	
+
+	Game game = Game();
+	Position* positions;
+	int code = 0;
+
 	string ans;
 	while (!isConnect)
 	{
@@ -63,20 +68,25 @@ void main()
 		// according the protocol. Ex: e2e4           (move e2 to e4)
 		
 		// YOUR CODE
-		strcpy_s(msgToGraphics, "YOUR CODE"); // msgToGraphics should contain the result of the operation
+		//strcpy_s(msgToGraphics, "0"); // msgToGraphics should contain the result of the operation
 
-		/******* JUST FOR EREZ DEBUGGING ******/
-		int r = rand() % 10; // just for debugging......
-		msgToGraphics[0] = (char)(1 + '0');
+		///******* JUST FOR EREZ DEBUGGING ******/
+		//int r = rand() % 10; // just for debugging......
+		//msgToGraphics[0] = (char)(1 + '0');
+		//msgToGraphics[1] = 0;
+		///******* JUST FOR EREZ DEBUGGING ******/
+
+		msgToGraphics[0] = (char)(code + '0');
 		msgToGraphics[1] = 0;
-		/******* JUST FOR EREZ DEBUGGING ******/
-
 
 		// return result to graphics		
 		p.sendMessageToGraphics(msgToGraphics);   
 
 		// get message from graphics
 		msgFromGraphics = p.getMessageFromGraphics();
+		positions = game.getPositionFromMessage(msgFromGraphics);
+		code = game.makeTurn(positions[0], positions[1]);
+		
 	}
 
 	p.close();

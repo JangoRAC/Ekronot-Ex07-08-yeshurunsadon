@@ -224,6 +224,10 @@ bool Board::canMove(const Position& src, const Position& dst) const
 	{
 		return false;
 	}
+	if (src == dst)
+	{
+		return false;
+	}
 	if(!srcPiece)
 	{
 		return false; // No piece at source

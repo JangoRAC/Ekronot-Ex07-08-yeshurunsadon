@@ -8,8 +8,9 @@ public:
 	~Game();
 
 	const bool getIsWhiteTurn() const;
-	void makeTurn(Position src, Position dst);
+	int makeTurn(Position src, Position dst);
 	Board getBoard() const;
+	Position* getPositionFromMessage(const std::string msg);
 
 private:
 	bool _isWhiteTurn;
