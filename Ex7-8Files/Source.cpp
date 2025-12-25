@@ -18,7 +18,7 @@ using std::endl;
 using std::string;
 
 
-void main()
+int main()
 {
 	srand(time_t(NULL));
 
@@ -95,8 +95,8 @@ void main()
 		src = positions[0];
 		dst = positions[1];
 		code = game.makeTurn(src, dst);
-		std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 	}
 
 	p.close();
+	return 0;
 }

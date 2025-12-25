@@ -3,7 +3,7 @@
 #include "Rook.h"
 #include "King.h"
 #include "Bishop.h"
-#include "Queen.h";
+#include "Queen.h"
 #include "Knight.h"
 #include "Pon.h"
 #include <iostream>
