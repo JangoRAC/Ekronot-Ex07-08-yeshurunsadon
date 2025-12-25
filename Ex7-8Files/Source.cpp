@@ -95,6 +95,7 @@ void main()
 		src = positions[0];
 		dst = positions[1];
 		code = game.makeTurn(src, dst);
+		std::cout << game.getBoard().getBoardRepresentation() << std::endl;
 	}
 
 	p.close();

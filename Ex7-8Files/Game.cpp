@@ -51,6 +51,10 @@ int Game::makeTurn(Position src, Position dst)
 	{
 		code = 6;
 	}
+	else if ((srcPiece->getType() == "P" || srcPiece->getType() == "p") && this->_board.getSquare(dst).IsOccupied() && src.getCol() == dst.getCol())
+	{
+		code = 6;
+	}
 	else if (src == dst)
 	{
 		code = 7;

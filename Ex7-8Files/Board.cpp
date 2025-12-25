@@ -21,25 +21,25 @@ Board::Board()
 	this->_squares[0][0].setPiece(whiteRook1);
 	this->_squares[0][7].setPiece(whiteRook2);
 
-	King* blackKing = new King(Position(7, 3), false);
-	King* whiteKing = new King(Position(0, 3), true);
-	this->_squares[7][3].setPiece(blackKing);
-	this->_squares[0][3].setPiece(whiteKing);
+	King* blackKing = new King(Position(7, 4), false);
+	King* whiteKing = new King(Position(0, 4), true);
+	this->_squares[7][4].setPiece(blackKing);
+	this->_squares[0][4].setPiece(whiteKing);
 
 
 	Bishop* whiteBishop1 = new Bishop(Position(0, 2), true);
-	Bishop* whiteBishop2 = new Bishop(Position(0, 2), true);
+	Bishop* whiteBishop2 = new Bishop(Position(0, 5), true);
 	Bishop* blackBishop1 = new Bishop(Position(7, 2), false);
-	Bishop* blackBishop2 = new Bishop(Position(7, 2), false);
+	Bishop* blackBishop2 = new Bishop(Position(7, 5), false);
 	this->_squares[0][2].setPiece(whiteBishop1);
 	this->_squares[0][5].setPiece(whiteBishop2);
 	this->_squares[7][2].setPiece(blackBishop1);
 	this->_squares[7][5].setPiece(blackBishop2);
 
-	Queen* whiteQueen = new Queen(Position(0,4), true);
-	Queen* blackQueen = new Queen(Position(7, 4), false);
-	this->_squares[0][4].setPiece(whiteQueen);
-	this->_squares[7][4].setPiece(blackQueen);
+	Queen* whiteQueen = new Queen(Position(0,3), true);
+	Queen* blackQueen = new Queen(Position(7, 3), false);
+	this->_squares[0][3].setPiece(whiteQueen);
+	this->_squares[7][3].setPiece(blackQueen);
 
 	Knight* whiteKnight1 = new Knight(Position(0, 1), true);
 	Knight* whiteKnight2 = new Knight(Position(0, 6), true);
