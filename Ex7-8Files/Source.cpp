@@ -3,7 +3,7 @@ This file servers as an example of how to use Pipe.h file.
 It is recommended to use the following code in your project, 
 in order to read and write information from and to the Backend
 */
-#define _CRT_SECURE_NO_WANINGS//for visual studio to not block regular strcpy becuse strcpy_S dosent work on the git tester
+#define _CRT_SECURE_NO_WARNINGS//for visual studio to not block regular strcpy becuse strcpy_S dosent work on the git tester
 #include "Pipe.h"
 #include <iostream>
 #include <thread>
@@ -57,7 +57,7 @@ int main()
 	// msgToGraphics should contain the board string accord the protocol
 	// YOUR CODE
 #ifdef _WIN32
-	strcpy_s(msgToGraphics, "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"); // just example...
+	strcpy(msgToGraphics, "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"); // just example...
 	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 
 #endif // _WIN32
@@ -85,8 +85,10 @@ int main()
 		//msgToGraphics[1] = 0;
 		///******* JUST FOR EREZ DEBUGGING ******/
 
-		msgToGraphics[0] = (char)(code + '0');
-		msgToGraphics[1] = 0;
+		char codeAsChar = (char)(code + '0');
+		char codeChars[1024] = { '\0' };
+		codeChars[0] = codeAsChar;
+		strcpy(msgToGraphics, codeChars);
 
 		// return result to graphics		
 		p.sendMessageToGraphics(msgToGraphics);
