@@ -56,11 +56,13 @@ int main()
 	char msgToGraphics[1024];
 	// msgToGraphics should contain the board string accord the protocol
 	// YOUR CODE
-
-	strcpy(msgToGraphics, "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"); // just example...
-	
+#ifdef _WIN32
+	strcpy_s(msgToGraphics, "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"); // just example...
 	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 
+#endif // _WIN32
+
+	
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 
