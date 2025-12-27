@@ -85,9 +85,8 @@ int main()
 		//msgToGraphics[1] = 0;
 		///******* JUST FOR EREZ DEBUGGING ******/
 
-		char codeAsChar = (char)(code + '0');
 		char codeChars[1024] = { '\0' };
-		codeChars[0] = codeAsChar;
+		codeChars[0] = (char)(code + '0');;
 		strcpy(msgToGraphics, codeChars);
 
 		// return result to graphics		

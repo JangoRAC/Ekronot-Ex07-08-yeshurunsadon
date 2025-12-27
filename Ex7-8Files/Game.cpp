@@ -3,7 +3,7 @@
 Game::Game()
 {
 	this->_isWhiteTurn = true;
-	//leave it commented because it works without this line for some reason
+	//left it commented because it works without this line for some reason
 	//this->_board = Board();
 }
 
@@ -29,8 +29,9 @@ int Game::makeTurn(Position src, Position dst)
 		{
 			code = 1;
 		}
-		this->_isWhiteTurn = !this->_isWhiteTurn;
+		this->_isWhiteTurn = !this->_isWhiteTurn;//changing the turn if the move is valid
 	}
+	//chcking the reson the move is invalid
 	else if (!srcPiece || srcPiece->isWhite() != this->_isWhiteTurn)
 	{
 		code = 2;
@@ -52,7 +53,7 @@ int Game::makeTurn(Position src, Position dst)
 		code = 6;
 	}
 	else if ((srcPiece->getType() == "P" || srcPiece->getType() == "p") && this->_board.getSquare(dst).IsOccupied() && src.getCol() == dst.getCol())
-	{
+	{//rooks cant eat if it is not diagonal
 		code = 6;
 	}
 	else if (src == dst)
